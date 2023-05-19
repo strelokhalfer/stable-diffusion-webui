@@ -71,7 +71,6 @@ def save_files(js_data, images, do_make_zip, index):
             i = 0 if is_grid else (image_index - p.index_of_first_image)
 
             fullfn, txt_fullfn = modules.images.save_image(image, path, "", seed=p.all_seeds[i], prompt=p.all_prompts[i], extension=extension, info=p.infotexts[image_index], grid=is_grid, p=p, save_to_dirs=save_to_dirs)
-
             filename = os.path.relpath(fullfn, path)
             filenames.append(filename)
             fullfns.append(fullfn)
@@ -83,7 +82,11 @@ def save_files(js_data, images, do_make_zip, index):
 
     # Make Zip
     if do_make_zip:
-        zip_filepath = os.path.join(path, "images.zip")
+        from datetime import datetime
+        zip_filedatetime = datetime.now().strftime("%Y-%m-%dT%H-%M")
+        zip_fileseeds = p.all_seeds[index-1] if index > 0 else f"{p.all_seeds[0]}-{p.all_seeds[-1]}"
+        zip_filename = f"{zip_filedatetime}_{zip_fileseeds}"
+        zip_filepath = os.path.join(path, f"{zip_filename}.zip")
 
         from zipfile import ZipFile
         with ZipFile(zip_filepath, "w") as zip_file:
